@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MicroDiag AI · Demo interface</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+<!-- SIDEBAR: navigation buttons and system status -->
+<aside>
+  <div class="brand">Micro<b>Diag</b> AI</div><div class="sub">Demo interface</div>
+  <button class="nav on" data-v="live">◉&nbsp; Live capture</button>
+  <button class="nav" data-v="patients">☰&nbsp; Patients</button>
+  <button class="nav" data-v="results">◧&nbsp; Results</button>
+  <button class="nav" data-v="history">↺&nbsp; History</button>
+  <div class="stat">
+    <div><span class="dot"></span>Camera not connected</div>
+    <div><span class="dot"></span>Stage not connected</div>
+    <div><span class="dot"></span>AI models pending</div>
+    <div class="demo">Demo interface only</div>
+  </div>
+</aside>
+<!-- MAIN AREA: four pages, one visible at a time -->
+<main>
+  <div class="top"><h1 id="title">Live capture</h1>
+    <div class="row"><span class="chip">Demo interface</span><select id="psel" aria-label="Active patient"></select></div></div>
+  <div class="notice"><b>Demo interface only.</b> The camera, motor stage and AI models are not connected. Patient entries are <b>Demo Data</b>, not real records, and nothing is saved when you refresh the page.</div>
+
+  <!-- LIVE CAPTURE -->
+  <section class="view on" id="v-live">
+    <div class="kpis"><div class="card"><span>Demo patients</span><b id="k1">0</b></div><div class="card"><span>Demo tests</span><b id="k2">0</b></div><div class="card"><span>Analyzed images</span><b id="k3">0</b></div></div>
+    <div class="g2">
+      <div class="col">
+        <div class="ph tall"><span class="badge off">OFFLINE</span><div><b>No live image</b><br>The camera and the stage are not connected yet.<br>The live feed appears here when the camera is connected.</div></div>
+        <div class="cap" id="hud"></div>
+        <div class="card"><h2>Image capture control <span class="sim">Planned</span></h2>
+          <div class="row"><button class="btn pri planned" id="capNow">● Capture now</button><button class="btn planned" id="af">Auto-focus</button>
+            <select id="zoom" aria-label="Magnification"><option>10×</option><option selected>40×</option><option>100×</option></select></div>
+          <label class="l" style="margin-top:14px">Slide map · select a target field</label>
+          <div class="map" id="map"></div>
+          <div class="row"><button class="btn planned" id="mvCap">Move stage &amp; capture</button><span class="mono" id="pos" style="font-size:13px"></span></div>
+          <div class="note">Capture, auto-focus, stage movement and AI analysis are planned functions. They stay inactive until the camera, the motor stage and the trained models are connected.</div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card"><h2>Active patient</h2><div class="kv" id="pcard"></div></div>
+        <div class="card"><h2>Image quality</h2><div class="big muted">—</div><div class="cap">Not available. The score needs a connected camera and the quality model.</div></div>
+        <div class="card"><h2>Planned workflow <span class="sim">Planned</span></h2><ol class="steps"><li>Capture</li><li>Quality check</li><li>AI analysis</li><li>Specialist review</li></ol></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PATIENTS -->
+  <section class="view" id="v-patients">
+    <div class="row tools">
+      <button class="btn pri" id="bNewP">+ New Patient</button>
+      <button class="btn" id="bNewT">+ New Test</button>
+      <span class="cap">New Patient creates a patient record. New Test adds a test to the selected patient.</span>
+    </div>
+    <div class="g2">
+      <div class="card"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h2 style="margin:0">Patient list · sorted by ID <span class="sim">Demo Data</span></h2><input id="q" placeholder="Search ID or initials"></div>
+        <div class="wrap"><table><thead><tr><th>ID</th><th>Initials</th><th>Age/Sex</th><th>Sample</th><th>Last test</th></tr></thead><tbody id="ptb"></tbody></table></div></div>
+      <div class="col">
+        <div class="card hide" id="fP"><h2>New patient</h2>
+          <div class="row"><input id="nIni" placeholder="Initials" size="6"><input id="nAge" placeholder="Age" size="4" type="number"><select id="nSex"><option>M</option><option>F</option></select></div>
+          <div class="row" style="margin-top:8px"><select id="nSam"><option>Peripheral blood smear</option><option>Bone marrow aspirate</option></select></div>
+          <input id="nSym" placeholder="Symptoms" style="width:100%;margin-top:8px">
+          <input id="nHist" placeholder="Medical history" style="width:100%;margin:8px 0">
+          <div class="row"><button class="btn pri" id="nAdd">Create patient</button><button class="btn" id="nCancel">Cancel</button></div>
+          <div class="note">Demo entry only. Do not type real patient data. The entry is lost when the page refreshes.</div></div>
+        <div class="card hide" id="fT"><h2>New test</h2>
+          <div class="kv"><span>Patient</span><span class="mono" id="tWho"></span></div>
+          <div class="row" style="margin:10px 0"><select id="tSam"><option>Peripheral blood smear</option><option>Bone marrow aspirate</option></select><input id="tDate" type="date"></div>
+          <div class="row"><button class="btn pri" id="tAdd">Create test</button><button class="btn" id="tCancel">Cancel</button></div>
+          <div class="note">The test has no images yet. Images are added when capture becomes available.</div></div>
+        <div class="card"><h2>Patient record</h2><div class="kv" id="pdet"></div></div>
+        <div class="card"><h2>Previous tests</h2><div class="wrap"><table><thead><tr><th>Test</th><th>Date</th><th>Sample</th><th>Images</th><th>Aggregated result</th></tr></thead><tbody id="ptests"></tbody></table></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="view" id="v-results">
+    <div class="row" style="margin-bottom:12px"><label class="l" style="margin:0">Test</label><select id="tsel"></select><span class="mono cap" id="rmeta"></span></div>
+    <div class="g2">
+      <div class="col">
+        <div class="g3">
+          <div><div class="ph"><div><b>Original image</b><br>No image yet</div></div><div class="cap">Original image</div></div>
+          <div><div class="ph"><div><b>Processed image</b><br>No image yet</div></div><div class="cap">Image after processing</div></div>
+        </div>
+        <div class="card"><h2>Detected regions (YOLO)</h2><div class="status">YOLO model not connected</div>
+          <div class="wrap"><table><thead><tr><th>#</th><th>Class</th><th>Confidence</th><th>x</th><th>y</th><th>w</th><th>h</th></tr></thead><tbody><tr><td colspan="7" class="cap">No detections. Region coordinates appear here when the model is connected.</td></tr></tbody></table></div></div>
+      </div>
+      <div class="col">
+        <div class="card"><h2>Image prediction (CNN)</h2><div class="status">CNN model not connected</div><div class="cap">Class, probabilities and confidence appear here when the trained model is connected.</div></div>
+        <div class="card"><h2>Image quality</h2><div class="big muted">—</div><div class="cap">Not available.</div></div>
+        <div class="card"><h2>Aggregated test result (optional)</h2><div class="status">Not computed</div><div class="cap">The result needs the connected CNN and YOLO models.</div><button class="btn" style="margin-top:10px" disabled>Compute aggregated result</button></div>
+        <div class="row"><button class="btn planned" id="reimg">Request re-imaging</button><button class="btn planned" id="save">Save to record</button></div>
+        <div class="cap">Planned functions. Final output is decision support. A specialist confirms every result.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="view" id="v-history">
+    <div class="card"><h2 id="hh">Test history</h2>
+      <div class="note" style="margin:0 0 10px">Demo tests only. Permanent data storage is not available in this version, so entries are lost when the page refreshes.</div>
+      <div class="wrap"><table><thead><tr><th>Test</th><th>Date</th><th>Sample</th><th>Images</th><th>Aggregated result</th><th></th></tr></thead><tbody id="htb"></tbody></table></div></div>
+    <div class="card" style="margin-top:16px"><h2>Compare latest with previous <span class="sim">Planned</span></h2>
+      <div class="ph short"><div>Comparison between tests needs real images and model results.<br>Not available in this version.</div></div></div>
+  </section>
+</main>
+</div>
+<div id="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>
